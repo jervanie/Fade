@@ -1,0 +1,21 @@
+local print, warn = function() end, function() end
+if not game:IsLoaded() then game.Loaded:Wait() end
+
+-- Block duplicates only inside the current DataModel. Executor globals may
+-- survive a server rejoin, but connections from the previous game do not.
+local __tekMainSameGame = (_G.TekMainLoadedGame == game)
+    and (_G.TekMainLoadedWorkspace == workspace)
+if _G.TekMainInstanceLoaded and __tekMainSameGame then return end
+_G.TekMainInstanceLoaded = true
+_G.TekMainLoadedGame = game
+_G.TekMainLoadedWorkspace = workspace
+
+local _gameLoadAt = os.clock()
+
+_G.TekInvisAuto = _G.TekInvisAuto == true
+_G.TekAutoKickOnSteal, _G.TekAutoBuy = false, false
+_G.TekStealMode = _G.TekStealMode or "priority"
+_G.TekAutoTP = (_G.TekAutoTP == nil) and true or _G.TekAutoTP
+
+local _profOut = { "TekPanelScanGap", "TekRepickGap", "TekInRangeGap", "TekWatchdogTick", "TekSyncScanGap", "TekAutoTPPoll" }
+local _profSfx = { "PanelGap", "RepickGap", "InRangeGap", "WatchdogTick", "SyncGap", "TPPoll" }
